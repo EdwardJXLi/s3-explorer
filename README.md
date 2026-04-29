@@ -41,6 +41,15 @@ docker build -t s3-explorer .
 docker run --rm -p 8080:8080 --env-file .env s3-explorer
 ```
 
+## Docker Compose
+
+```bash
+cp .env.example .env
+docker compose -f docker-compose.example.yml up -d
+```
+
+If your storage endpoint is another Compose service, set `STORAGE_ENDPOINT` to that service name, for example `http://minio:9000`, and attach this service to the same Docker network.
+
 ## Configuration
 
 ### Branding

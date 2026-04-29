@@ -1,0 +1,19 @@
+services:
+  s3-explorer:
+    image: ghcr.io/edwardjxli/s3-explorer:latest
+    container_name: s3-explorer
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+
+    # If your storage endpoint is another Compose service, use the service DNS
+    # name in .env, for example: STORAGE_ENDPOINT=http://minio:9000
+    #
+    # networks:
+    #   - storage
+
+# networks:
+#   storage:
+#     external: true
