@@ -1,8 +1,19 @@
 import "dotenv/config";
+import { readFileSync } from "node:fs";
+import path from "node:path";
 
 export type AuthMode = "none" | "simple" | "oidc";
 
 const env = process.env;
+
+function packageVersion(): string {
+  try {
+    const packageJson = JSON.parse(readFileSync(path.join(process.cwd(), "package.json"), "utf8")) as { version?: unknown };
+    return typeof packageJson.version === "string" && packageJson.version.trim() ? packageJson.version.trim() : "0.0.0";
+  } catch {
+    return "0.0.0";
+  }
+}
 
 function csv(value: string | undefined): string[] {
   return (value ?? "")
@@ -39,7 +50,9 @@ export const config = {
   app: {
     name: env.APP_NAME ?? "S3 Explorer",
     iconUrl: env.APP_ICON_URL,
-    defaultTheme: env.APP_DEFAULT_THEME === "dark" ? "dark" : "light"
+    defaultTheme: env.APP_DEFAULT_THEME === "dark" ? "dark" : "light",
+    version: env.APP_VERSION || packageVersion(),
+    showPoweredByFooter: bool(env.SHOW_POWERED_BY_FOOTER, true)
   },
 
   storage: {

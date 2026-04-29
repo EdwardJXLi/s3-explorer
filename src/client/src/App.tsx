@@ -54,6 +54,8 @@ interface BrandingConfig {
   name: string;
   iconUrl?: string;
   defaultTheme: Theme;
+  version: string;
+  showPoweredByFooter: boolean;
 }
 
 interface AuthConfig {
@@ -139,6 +141,19 @@ function AppMark({ branding, size = 24 }: { branding: BrandingConfig; size?: num
   return <Archive size={size} />;
 }
 
+function PoweredByFooter({ enabled, version }: { enabled: boolean; version: string }) {
+  if (!enabled) return null;
+  return (
+    <footer className="powered-footer">
+      <span>Powered by</span>
+      <a href="https://github.com/EdwardJXLi/S3Explorer" target="_blank" rel="noreferrer">
+        S3Explorer
+      </a>
+      {version && <span>v{version}</span>}
+    </footer>
+  );
+}
+
 function LoginView({
   authMode,
   branding,
@@ -205,6 +220,7 @@ function LoginView({
           </form>
         )}
       </section>
+      <PoweredByFooter enabled={branding.showPoweredByFooter} version={branding.version} />
     </main>
   );
 }
@@ -219,7 +235,9 @@ export function App() {
   const [loginSubtitle, setLoginSubtitle] = useState("Sign in to browse and manage configured buckets.");
   const [branding, setBranding] = useState<BrandingConfig>({
     name: "S3 Explorer",
-    defaultTheme: "light"
+    defaultTheme: "light",
+    version: "0.0.0",
+    showPoweredByFooter: true
   });
   const [user, setUser] = useState<User | null>(null);
   const [appConfig, setAppConfig] = useState<AppConfig | null>(null);
@@ -767,6 +785,7 @@ export function App() {
             </div>
           )}
         </section>
+        <PoweredByFooter enabled={branding.showPoweredByFooter} version={branding.version} />
       </main>
 
       {mobileSidebarOpen && (

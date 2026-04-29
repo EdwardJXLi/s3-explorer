@@ -58,6 +58,8 @@ If your storage endpoint is another Compose service, set `STORAGE_ENDPOINT` to t
 - `APP_ICON_URL`: optional image URL for the app mark. Use a small square PNG, SVG, or favicon-style asset.
 - `APP_DEFAULT_THEME`: `light` or `dark`. Defaults to `light`; users can still toggle and persist their own choice.
 - `LOGIN_SUBTITLE`: supporting text shown on the login screen. Defaults to `Sign in to browse and manage configured buckets.`
+- `APP_VERSION`: optional version override shown in the footer. Defaults to the version in `package.json`.
+- `SHOW_POWERED_BY_FOOTER`: show the small `Powered by S3Explorer` footer. Defaults to `true`; set to `false` to hide it.
 
 ### Storage
 
