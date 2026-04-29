@@ -17,7 +17,8 @@ import {
   Search,
   Sun,
   Trash2,
-  Upload
+  Upload,
+  X
 } from "lucide-react";
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 
@@ -234,6 +235,7 @@ export function App() {
   const [notice, setNotice] = useState("");
   const [modal, setModal] = useState<Modal | null>(null);
   const [openMenuKey, setOpenMenuKey] = useState<string | null>(null);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [fileLinks, setFileLinks] = useState<Record<string, string>>({});
   const fileInput = useRef<HTMLInputElement>(null);
   const suppressUrlSync = useRef(false);
@@ -512,6 +514,21 @@ export function App() {
   }
 
   const crumbs = prefix.split("/").filter(Boolean);
+  const renderBucketItems = () =>
+    buckets.map((item) => (
+      <button
+        key={item}
+        className={item === bucket ? "bucket active" : "bucket"}
+        onClick={() => {
+          setBucket(item);
+          setPrefix("");
+          setMobileSidebarOpen(false);
+        }}
+      >
+        <Archive size={16} />
+        <span>{item}</span>
+      </button>
+    ));
 
   return (
     <div className="app-shell">
@@ -522,33 +539,25 @@ export function App() {
         </div>
         <div className="sidebar-section">
           <div className="sidebar-heading">Buckets</div>
-          <div className="bucket-list">
-            {buckets.map((item) => (
-              <button
-                key={item}
-                className={item === bucket ? "bucket active" : "bucket"}
-                onClick={() => {
-                  setBucket(item);
-                  setPrefix("");
-                }}
-              >
-                <Archive size={16} />
-                <span>{item}</span>
-              </button>
-            ))}
-          </div>
+          <div className="bucket-list">{renderBucketItems()}</div>
         </div>
       </aside>
 
       <main className="workspace">
         <header className="topbar">
-          <button className="icon-button mobile-only" aria-label="Menu">
+          <button
+            className="icon-button mobile-only"
+            aria-label="Open bucket menu"
+            aria-expanded={mobileSidebarOpen}
+            onClick={() => setMobileSidebarOpen(true)}
+          >
             <Menu size={18} />
           </button>
           <div className="pathbar">
             <button className="crumb root" onClick={() => setPrefix("")}>
               <Home size={16} />
             </button>
+            {bucket && <span className="mobile-bucket-name">{bucket}</span>}
             {crumbs.map((crumb, index) => {
               const nextPrefix = `${crumbs.slice(0, index + 1).join("/")}/`;
               return (
@@ -634,7 +643,12 @@ export function App() {
           </div>
           <div className="file-list">
             {visibleEntries.map((entry) => (
-              <div className="file-row" key={`${entry.type}:${entry.key}`} onDoubleClick={() => void openEntry(entry)}>
+              <div
+                className="file-row"
+                data-entry-type={entry.type}
+                key={`${entry.type}:${entry.key}`}
+                onDoubleClick={() => void openEntry(entry)}
+              >
                 <button className="name-cell" onClick={() => void openEntry(entry)}>
                   {entry.type === "folder" ? <Folder size={20} /> : <File size={20} />}
                   <span>{entry.name}</span>
@@ -754,6 +768,26 @@ export function App() {
           )}
         </section>
       </main>
+
+      {mobileSidebarOpen && (
+        <div className="mobile-sidebar-backdrop" onMouseDown={() => setMobileSidebarOpen(false)}>
+          <aside className="mobile-sidebar-panel" onMouseDown={(event) => event.stopPropagation()}>
+            <div className="mobile-sidebar-head">
+              <div className="brand">
+                <AppMark branding={branding} size={24} />
+                <span>{branding.name}</span>
+              </div>
+              <button className="icon-button" aria-label="Close bucket menu" onClick={() => setMobileSidebarOpen(false)}>
+                <X size={18} />
+              </button>
+            </div>
+            <div className="sidebar-section">
+              <div className="sidebar-heading">Buckets</div>
+              <div className="bucket-list">{renderBucketItems()}</div>
+            </div>
+          </aside>
+        </div>
+      )}
 
       {modal && (
         <div className="modal-backdrop" onMouseDown={() => setModal(null)}>
