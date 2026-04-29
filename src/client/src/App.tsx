@@ -55,6 +55,13 @@ interface BrandingConfig {
   defaultTheme: Theme;
 }
 
+interface AuthConfig {
+  mode: AuthMode;
+  oidcLoginButtonText: string;
+  loginSubtitle: string;
+  app?: BrandingConfig;
+}
+
 type Modal =
   | { type: "rename"; entry: Entry; value: string }
   | { type: "move"; entry: Entry; value: string }
@@ -134,10 +141,14 @@ function AppMark({ branding, size = 24 }: { branding: BrandingConfig; size?: num
 function LoginView({
   authMode,
   branding,
+  oidcLoginButtonText,
+  loginSubtitle,
   onLogin
 }: {
   authMode: AuthMode;
   branding: BrandingConfig;
+  oidcLoginButtonText: string;
+  loginSubtitle: string;
   onLogin: (user: User) => void;
 }) {
   const [username, setUsername] = useState("admin");
@@ -164,12 +175,12 @@ function LoginView({
         <div>
           <AppMark branding={branding} size={34} />
           <h1>{branding.name}</h1>
-          <p>Sign in to browse and manage configured buckets.</p>
+          <p>{loginSubtitle}</p>
         </div>
 
         {authMode === "oidc" ? (
           <a className="primary-button wide" href="/api/auth/oidc/login">
-            Continue with SSO
+            {oidcLoginButtonText}
           </a>
         ) : (
           <form onSubmit={submit} className="login-form">
@@ -203,6 +214,8 @@ export function App() {
     return stored === "dark" || stored === "light" ? stored : "light";
   });
   const [authMode, setAuthMode] = useState<AuthMode>("simple");
+  const [oidcLoginButtonText, setOidcLoginButtonText] = useState("Continue with SSO");
+  const [loginSubtitle, setLoginSubtitle] = useState("Sign in to browse and manage configured buckets.");
   const [branding, setBranding] = useState<BrandingConfig>({
     name: "S3 Explorer",
     defaultTheme: "light"
@@ -344,8 +357,10 @@ export function App() {
   async function bootstrap() {
     setLoading(true);
     try {
-      const auth = await api<{ mode: AuthMode; app?: BrandingConfig }>("/api/auth/config");
+      const auth = await api<AuthConfig>("/api/auth/config");
       setAuthMode(auth.mode);
+      setOidcLoginButtonText(auth.oidcLoginButtonText || "Continue with SSO");
+      setLoginSubtitle(auth.loginSubtitle || "Sign in to browse and manage configured buckets.");
       if (auth.app) {
         setBranding(auth.app);
         if (!localStorage.getItem("theme")) setTheme(auth.app.defaultTheme);
@@ -486,6 +501,8 @@ export function App() {
       <LoginView
         authMode={authMode}
         branding={branding}
+        oidcLoginButtonText={oidcLoginButtonText}
+        loginSubtitle={loginSubtitle}
         onLogin={(nextUser) => {
           setUser(nextUser);
           void loadInitialData();

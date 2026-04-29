@@ -139,6 +139,8 @@ export async function registerAuthRoutes(app: FastifyInstance) {
     mode: config.auth.mode,
     simpleEnabled: config.auth.mode === "simple",
     oidcEnabled: config.auth.mode === "oidc",
+    oidcLoginButtonText: config.auth.oidc.loginButtonText,
+    loginSubtitle: config.auth.oidc.loginSubtitle,
     app: config.app
   }));
 

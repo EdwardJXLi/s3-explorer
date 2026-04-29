@@ -57,6 +57,7 @@ If your storage endpoint is another Compose service, set `STORAGE_ENDPOINT` to t
 - `APP_NAME`: name shown on the login screen, sidebar, and browser title. Defaults to `S3 Explorer`.
 - `APP_ICON_URL`: optional image URL for the app mark. Use a small square PNG, SVG, or favicon-style asset.
 - `APP_DEFAULT_THEME`: `light` or `dark`. Defaults to `light`; users can still toggle and persist their own choice.
+- `LOGIN_SUBTITLE`: supporting text shown on the login screen. Defaults to `Sign in to browse and manage configured buckets.`
 
 ### Storage
 
@@ -98,6 +99,7 @@ OIDC:
 - `OIDC_CLIENT_ID`
 - `OIDC_CLIENT_SECRET`: optional for public clients.
 - `OIDC_REDIRECT_URI`: defaults to `${PUBLIC_BASE_URL}/api/auth/oidc/callback`.
+- `OIDC_LOGIN_BUTTON_TEXT`: text shown on the OIDC login button. Defaults to `Continue with SSO`.
 - `OIDC_SCOPES`: defaults to `openid email profile`.
 - `OIDC_EMAIL_CLAIM`, `OIDC_NAME_CLAIM`
 - `OIDC_ROLE_CLAIM`: defaults to `roles`.

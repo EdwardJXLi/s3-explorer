@@ -82,6 +82,8 @@ export const config = {
       clientId: env.OIDC_CLIENT_ID,
       clientSecret: env.OIDC_CLIENT_SECRET,
       redirectUri: env.OIDC_REDIRECT_URI,
+      loginButtonText: env.OIDC_LOGIN_BUTTON_TEXT ?? "Continue with SSO",
+      loginSubtitle: env.LOGIN_SUBTITLE ?? "Sign in to browse and manage configured buckets.",
       scopes: env.OIDC_SCOPES ?? "openid email profile",
       emailClaim: env.OIDC_EMAIL_CLAIM ?? "email",
       nameClaim: env.OIDC_NAME_CLAIM ?? "name",
